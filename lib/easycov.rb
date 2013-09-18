@@ -18,6 +18,7 @@ module EasyCov
     # Start coverage engine
     # Can be run multiple times without side-effect.
     def start
+      return if ENV["DISABLE_EASYCOV"] == "1"
       @resolve_symlinks = true if @resolve_symlinks.nil?
       @path ||= File.expand_path("coverage")
       @root ||= Dir.pwd # only set first time
@@ -26,6 +27,7 @@ module EasyCov
 
     # Dump coverage to disk in a thread-safe way
     def dump
+      return if ENV["DISABLE_EASYCOV"] == "1"
       Coverage.start # always make sure we are started
 
       FileUtils.mkdir_p(@path)
@@ -74,12 +76,9 @@ module EasyCov
     end
 
     def install_exit_hook
+      return if ENV["DISABLE_EASYCOV"] == "1"
       Kernel.at_exit do
         EasyCov.checkpoint
-        # if Process.pid == EasyCov::TOP_PID then
-        #   # last process exiting, run default formatter (html)
-        #   SimpleCov::ResultMerger.merged_result.format!
-        # end
       end
     end
 
