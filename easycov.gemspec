@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
     "Gemfile.lock",
     "Rakefile",
     "VERSION",
+    "easycov.gemspec",
     "lib/easycov.rb",
     "lib/easycov/filters.rb"
   ]
