@@ -34,7 +34,7 @@ module EasyCov
       output = File.join(@path, ".resultset.json")
 
       # lock in case we are in a threaded/multiproc env
-      Lockfile.new(File.join(@path, ".lockfile")) do
+      EasyCov.lock(output) do
         # load existing if avail
         data = File.exists?(output) ? MultiJson.load(File.read(output)) : {}
 
@@ -48,8 +48,9 @@ module EasyCov
           :timestamp => time.to_i
         }
 
-        # write
-        File.open(output, 'w'){ |f| f.write(MultiJson.dump(data)) }
+        # write to tmp file then move, in case we err out
+        File.open(output+".tmp", 'w'){ |f| f.write(MultiJson.dump(data)) }
+        File.rename(output+".tmp", output)
       end # lock
 
     end # dump
@@ -79,6 +80,30 @@ module EasyCov
       return if ENV["DISABLE_EASYCOV"] == "1"
       Kernel.at_exit do
         EasyCov.checkpoint
+      end
+    end
+
+    # Create a flock on the given file
+    #
+    # @param [String] lockfile    to lock on
+    # @param [Block]
+    def lock(lockfile, &block)
+      lockfile = "#{lockfile}.lock"
+
+      FileUtils.touch(lockfile)
+      lock = File.new(lockfile)
+      lock.flock(File::LOCK_EX)
+
+      block.call()
+
+      begin
+        lock.flock(File::LOCK_UN)
+      rescue
+      end
+
+      begin
+        File.delete(lockfile)
+      rescue
       end
     end
 

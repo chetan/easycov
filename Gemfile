@@ -2,7 +2,6 @@ source "https://rubygems.org"
 
 gem "simplecov"
 gem "multi_json"
-gem "lockfile"
 
 group :development do
   gem "yard", "~> 0.8"

@@ -34,7 +34,6 @@ GEM
     json (1.8.0)
     jwt (0.1.8)
       multi_json (>= 1.5)
-    lockfile (2.1.0)
     minitest (4.7.5)
     multi_json (1.8.0)
     multi_xml (0.5.5)
@@ -63,7 +62,6 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.1)
   jeweler!
-  lockfile
   minitest (~> 4.0)
   multi_json
   simplecov

@@ -34,7 +34,6 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<simplecov>, [">= 0"])
       s.add_runtime_dependency(%q<multi_json>, [">= 0"])
-      s.add_runtime_dependency(%q<lockfile>, [">= 0"])
       s.add_development_dependency(%q<yard>, ["~> 0.8"])
       s.add_development_dependency(%q<bundler>, ["~> 1.1"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
@@ -42,7 +41,6 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<simplecov>, [">= 0"])
       s.add_dependency(%q<multi_json>, [">= 0"])
-      s.add_dependency(%q<lockfile>, [">= 0"])
       s.add_dependency(%q<yard>, ["~> 0.8"])
       s.add_dependency(%q<bundler>, ["~> 1.1"])
       s.add_dependency(%q<jeweler>, [">= 0"])
@@ -51,7 +49,6 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<simplecov>, [">= 0"])
     s.add_dependency(%q<multi_json>, [">= 0"])
-    s.add_dependency(%q<lockfile>, [">= 0"])
     s.add_dependency(%q<yard>, ["~> 0.8"])
     s.add_dependency(%q<bundler>, ["~> 1.1"])
     s.add_dependency(%q<jeweler>, [">= 0"])
