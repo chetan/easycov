@@ -31,27 +31,19 @@ module EasyCov
       Coverage.start # always make sure we are started
 
       FileUtils.mkdir_p(@path)
+
+      if ENV["PARALLEL_EASYCOV"] == "1" then
+        # in parallel mode, write output to separate files for each process
+        # to be merged later, via #merge
+        write_json(File.join(@path, ".tmp.#{$$}.resultset.json"))
+        return
+      end
+
+      # default is to lock the output file
       output = File.join(@path, ".resultset.json")
-
-      # lock in case we are in a threaded/multiproc env
       EasyCov.lock(output) do
-        # load existing if avail
-        data = File.exists?(output) ? MultiJson.load(File.read(output)) : {}
-
-        # merge our data
-        result = apply_filters(Coverage.result)
-
-        time = Time.new
-        name = "Test #{time.strftime('%Y%m%d.%H%M%S')} #{Random.rand(1_000_000)}"
-        data[name] = {
-          :coverage  => result,
-          :timestamp => time.to_i
-        }
-
-        # write to tmp file then move, in case we err out
-        File.open(output+".tmp", 'w'){ |f| f.write(MultiJson.dump(data)) }
-        File.rename(output+".tmp", output)
-      end # lock
+        write_json(output)
+      end
 
     end # dump
 
@@ -81,6 +73,23 @@ module EasyCov
       Kernel.at_exit do
         EasyCov.checkpoint
       end
+    end
+
+    # Merge all temporary coverage files into main file
+    def merge!
+
+      output = File.join(@path, ".resultset.json")
+      files = [ output ] + Dir.glob(File.join(@path, ".tmp.*.resultset.json"))
+
+      data = {}
+      files.each do |f|
+        next if !File.exists? f
+        data.merge!(MultiJson.load(File.read(f)))
+      end
+
+      # write to final dest
+      File.open(output+".tmp", 'w'){ |f| f.write(MultiJson.dump(data)) }
+      File.rename(output+".tmp", output)
     end
 
     # Create a flock on the given file
@@ -140,6 +149,25 @@ module EasyCov
       end
 
       return ret
+    end
+
+    def write_json(output)
+      # load existing if avail
+      data = File.exists?(output) ? MultiJson.load(File.read(output)) : {}
+
+      # merge our data
+      result = apply_filters(Coverage.result)
+
+      time = Time.new
+      name = "Test #{time.strftime('%Y%m%d.%H%M%S')} #{Random.rand(1_000_000)}"
+      data[name] = {
+        :coverage  => result,
+        :timestamp => time.to_i
+      }
+
+      # write to tmp file then move, in case we err out
+      File.open(output+".tmp", 'w'){ |f| f.write(MultiJson.dump(data)) }
+      File.rename(output+".tmp", output)
     end
 
   end # self
