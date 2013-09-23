@@ -85,6 +85,7 @@ module EasyCov
       files.each do |f|
         next if !File.exists? f
         data.merge!(MultiJson.load(File.read(f)))
+        File.delete(f)
       end
 
       # write to final dest
