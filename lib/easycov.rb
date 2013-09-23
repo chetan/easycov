@@ -4,7 +4,6 @@ require "fileutils"
 
 require "simplecov"
 require "multi_json"
-require "lockfile"
 
 require "easycov/filters"
 
