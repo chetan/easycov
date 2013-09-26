@@ -7,11 +7,18 @@ module EasyCov
       def stdlib_paths
         return @stdlib_paths if !@stdlib_paths.nil?
 
+        # see if we have a cached answer
+        if ENV["EASYCOV_STDLIB_PATHS"] then
+          @stdlib_paths = ENV["EASYCOV_STDLIB_PATHS"].split(/:/)
+          return @stdlib_paths
+        end
+
         # load
         opt, lib = ENV.delete("RUBYOPT"), ENV.delete("RUBYLIB")
-        @stdlib_paths ||= `ruby -e 'puts $:'`.strip.split(/\n/)
+        @stdlib_paths = `ruby -e 'puts $:'`.strip.split(/\n/)
         ENV["RUBYOPT"] = opt
         ENV["RUBYLIB"] = lib
+        ENV["EASYCOV_STDLIB_PATHS"] = @stdlib_paths.join(":")
 
         return @stdlib_paths
       end
