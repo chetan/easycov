@@ -87,6 +87,8 @@ module EasyCov
         File.delete(f)
       end
 
+      prune(data)
+
       # write to final dest
       File.open(output+".tmp", 'w'){ |f| f.write(MultiJson.dump(data)) }
       File.rename(output+".tmp", output)
@@ -119,6 +121,13 @@ module EasyCov
 
 
     private
+
+    def prune(data)
+      cutoff = Time.new.to_i - 3600
+      data.reject! { |name, result|
+        result["timestamp"] < cutoff
+      }
+    end
 
     # Apply filters
     def apply_filters(result)
