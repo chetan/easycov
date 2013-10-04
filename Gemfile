@@ -1,6 +1,8 @@
 source "https://rubygems.org"
 
 gem "simplecov"
+gem "simplecov-html"
+gem "simplecov-console"
 gem "multi_json"
 
 group :development do
