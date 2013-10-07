@@ -67,6 +67,19 @@ module EasyCov
       @path = File.expand_path(path)
     end
 
+    # Detect the coverage path
+    #
+    # Uses the first of Dir.pwd/.coverage or Dir.pwd/coverage
+    def detect_path!
+      %w{.coverage coverage}.each { |c|
+        cov_dir = File.join(Dir.pwd, c)
+        if File.directory?(cov_dir) then
+          EasyCov.path = cov_dir
+          return
+        end
+      }
+    end
+
     def install_exit_hook
       return if ENV["DISABLE_EASYCOV"] == "1"
       Kernel.at_exit do
@@ -192,3 +205,5 @@ module SimpleCov
     end
   end
 end
+
+EasyCov.detect_path!
