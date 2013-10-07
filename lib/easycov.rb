@@ -95,9 +95,13 @@ module EasyCov
 
       data = {}
       files.each do |f|
-        next if !File.exists? f
-        data.merge!(MultiJson.load(File.read(f)))
-        File.delete(f)
+        begin
+          next if !File.size? f
+          data.merge!(MultiJson.load(File.read(f)))
+        rescue Oj::ParseError
+        ensure
+          File.delete(f) if File.exists? f
+        end
       end
 
       prune(data)
