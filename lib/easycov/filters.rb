@@ -24,9 +24,9 @@ module EasyCov
       end
     end
 
-    # Ignore files in <root>/test/
+    # Ignore files in <root>/test/ and <root>/.test/
     IGNORE_TESTS = lambda { |filename|
-      filename =~ %r{^#{EasyCov.root}/test/}
+      filename =~ %r{^#{EasyCov.root}/\.?test/}
     }
 
     # Ignore all filfes outside EasyCov.root (pwd by default)
