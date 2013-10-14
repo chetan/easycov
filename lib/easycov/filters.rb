@@ -29,6 +29,11 @@ module EasyCov
       filename =~ %r{^#{EasyCov.root}/\.?test/}
     }
 
+    # Ignore files in <root>/vendor/
+    IGNORE_VENDOR = lambda { |filename|
+      filename =~ %r{^#{EasyCov.root}/vendor/}
+    }
+
     # Ignore all filfes outside EasyCov.root (pwd by default)
     IGNORE_OUTSIDE_ROOT = lambda { |filename|
       filename !~ /^#{EasyCov.root}/
