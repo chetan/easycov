@@ -210,4 +210,10 @@ module SimpleCov
   end
 end
 
+# Set default path
 EasyCov.detect_path!
+EasyCov.path ||= "coverage"
+
+# Add some default filters
+EasyCov.filters << EasyCov::IGNORE_GEMS << EasyCov::IGNORE_STDLIB <<
+                   EasyCov::IGNORE_TESTS << EasyCov::IGNORE_VENDOR
